@@ -39,7 +39,7 @@ object M3u {
         val result = ArrayList<Channel>()
         var title = ""; var logo = ""; var group = ""; var tvgId = ""
         text.lineSequence().forEach { raw ->
-            val line = raw.trim().removePrefix("\\uFEFF")
+            val line = raw.trim().removePrefix("\uFEFF")
             when {
                 line.startsWith("#EXTINF", true) -> {
                     val attrs = attr.findAll(line).associate { it.groupValues[1].lowercase() to it.groupValues[2] }
