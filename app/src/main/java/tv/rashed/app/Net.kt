@@ -31,7 +31,7 @@ object Net {
 }
 
 object M3u {
-    private val attr = Regex("""([\\w-]+)="([^"]*)"""")
+    private val attr = Regex("""([\w-]+)="([^"]*)""")
     private val seriesWords = listOf("series", "tv show", "مسلسل", "مسلسلات", "دراما")
     private val movieWords = listOf("movie", "movies", "film", "films", "فيلم", "أفلام", "افلام")
 
@@ -101,14 +101,14 @@ object Xtream {
             Channel(id, o.s("name"), o.s("stream_icon"), vodCats[o.s("category_id")].orEmpty(),
                 root + "/movie/" + enc(p.user) + "/" + enc(p.pass) + "/" + id + "." + ext,
                 kind = "movie", rating = o.s("rating"),
-                year = Regex("""\\b(19|20)\\d{2}\\b""").find(o.s("name"))?.value.orEmpty(),
+                year = Regex("""\b(19|20)\d{2}\b""").find(o.s("name"))?.value.orEmpty(),
                 added = o.s("added").toLongOrNull() ?: 0L)
         }
         val series = JSONArray(Net.get(api(p, "get_series"))).objs().map { o ->
             val id = o.s("series_id")
             Channel(id, o.s("name"), o.s("cover"), seriesCats[o.s("category_id")].orEmpty(),
                 "", kind = "series", rating = o.s("rating"),
-                year = Regex("""\\b(19|20)\\d{2}\\b""").find(o.s("name"))?.value.orEmpty(),
+                year = Regex("""\b(19|20)\d{2}\b""").find(o.s("name"))?.value.orEmpty(),
                 plot = o.s("plot"), backdrop = o.optJSONArray("backdrop_path")?.optString(0).orEmpty())
         }
         return Content(live, movies, series)
@@ -246,6 +246,6 @@ class Stalker(portal: String, macAddress: String) {
         val response = call("type=itv&action=create_link&cmd=" + enc(command) +
             "&series=&forced_storage=&disable_ad=0&download=0&force_ch_link_check=0")
         val link = response.optJSONObject("js")?.s("cmd").orEmpty().ifBlank { command }
-        return Regex("""https?://\\S+""").find(link)?.value ?: link
+        return Regex("""https?://\S+""").find(link)?.value ?: link
     }
 }
