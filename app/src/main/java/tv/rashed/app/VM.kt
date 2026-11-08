@@ -97,8 +97,8 @@ class VM(app: Application) : AndroidViewModel(app) {
     }
 
     fun go(destination: Page) { page = destination; query = ""; category = "الكل" }
-    fun setQuery(value: String) { query = value }
-    fun setCategory(value: String) { category = value }
+    fun updateQuery(value: String) { query = value }
+    fun updateCategory(value: String) { category = value }
     fun setSeason(value: Int) { selectedSeason = value }
 
     fun openAdd() { showAdd = true; message = null }
