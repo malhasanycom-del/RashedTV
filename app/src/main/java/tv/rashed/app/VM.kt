@@ -129,7 +129,11 @@ class VM(app: Application) : AndroidViewModel(app) {
                 playlists = playlists + item
                 store.savePlaylists(playlists)
                 current = item
-                setContent(parsed)
+                setContent(Content(
+                    parsed.filter { it.kind == "live" },
+                    parsed.filter { it.kind == "movie" },
+                    parsed.filter { it.kind == "series" }
+                ))
                 page = Page.HOME
                 message = "تم استيراد " + parsed.size + " عنصر"
             } catch (e: Exception) { message = e.message ?: "فشل استيراد الملف" }
