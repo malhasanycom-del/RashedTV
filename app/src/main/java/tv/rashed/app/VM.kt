@@ -2,6 +2,9 @@ package tv.rashed.app
 
 import android.app.Application
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
@@ -16,55 +19,55 @@ class VM(app: Application) : AndroidViewModel(app) {
     private val store = Store(app)
     val exo: ExoPlayer = ExoPlayer.Builder(app).build()
 
-    var page: Page = Page.PLAYLISTS
+    var page by mutableStateOf<Page>(Page.PLAYLISTS)
         private set
-    var playlists: List<Playlist> = store.playlists()
+    var playlists by mutableStateOf<List<Playlist>>(store.playlists())
         private set
-    var current: Playlist? = null
+    var current by mutableStateOf<Playlist?>(null)
         private set
-    var live: List<Channel> = emptyList()
+    var live by mutableStateOf<List<Channel>>(emptyList())
         private set
-    var movies: List<Channel> = emptyList()
+    var movies by mutableStateOf<List<Channel>>(emptyList())
         private set
-    var series: List<Channel> = emptyList()
+    var series by mutableStateOf<List<Channel>>(emptyList())
         private set
-    var selected: Channel? = null
+    var selected by mutableStateOf<Channel?>(null)
         private set
-    var seriesOpen: Channel? = null
+    var seriesOpen by mutableStateOf<Channel?>(null)
         private set
-    var episodes: List<Episode> = emptyList()
+    var episodes by mutableStateOf<List<Episode>>(emptyList())
         private set
-    var seriesInfo: Info = Info()
+    var seriesInfo by mutableStateOf<Info>(Info())
         private set
-    var movieInfo: Info = Info()
+    var movieInfo by mutableStateOf<Info>(Info())
         private set
-    var selectedSeason: Int = 1
+    var selectedSeason by mutableStateOf<Int>(1)
         private set
-    var favorites: List<Channel> = emptyList()
+    var favorites by mutableStateOf<List<Channel>>(emptyList())
         private set
-    var recents: List<Channel> = emptyList()
+    var recents by mutableStateOf<List<Channel>>(emptyList())
         private set
-    var query: String = ""
+    var query by mutableStateOf<String>("")
         private set
-    var category: String = "الكل"
+    var category by mutableStateOf<String>("الكل")
         private set
-    var settings: Settings = store.settings()
+    var settings by mutableStateOf<Settings>(store.settings())
         private set
-    var fullscreen: Boolean = false
+    var fullscreen by mutableStateOf<Boolean>(false)
         private set
-    var showAdd: Boolean = false
-    var epgLines: List<String>? = null
-    var loading: Boolean = false
+    var showAdd by mutableStateOf<Boolean>(false)
+    var epgLines by mutableStateOf<List<String>?>(null)
+    var loading by mutableStateOf<Boolean>(false)
         private set
-    var message: String? = null
+    var message by mutableStateOf<String?>(null)
         private set
-    var playing: Boolean = false
+    var playing by mutableStateOf<Boolean>(false)
         private set
-    var playerTitle: String = ""
+    var playerTitle by mutableStateOf<String>("")
         private set
-    var playerError: String? = null
+    var playerError by mutableStateOf<String?>(null)
         private set
-    var busyLabel: String = ""
+    var busyLabel by mutableStateOf<String>("")
         private set
     private var stalker: Stalker? = null
 
