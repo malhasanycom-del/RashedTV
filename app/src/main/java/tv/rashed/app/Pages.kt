@@ -220,7 +220,7 @@ fun VodPage(vm: VM, kind: String) {
 
 @Composable
 private fun SearchAndCategories(vm: VM, source: List<Channel>) {
-    OutlinedTextField(value = vm.query, onValueChange = vm::setQuery, modifier = Modifier.fillMaxWidth(),
+    OutlinedTextField(value = vm.query, onValueChange = vm::updateQuery, modifier = Modifier.fillMaxWidth(),
         placeholder = { Text("ابحث بالاسم أو التصنيف") }, singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = Color.White, unfocusedTextColor = Color.White,
@@ -228,7 +228,7 @@ private fun SearchAndCategories(vm: VM, source: List<Channel>) {
     val categories = listOf("الكل") + source.map { it.group }.filter { it.isNotBlank() }.distinct().take(30)
     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(vertical = 8.dp)) {
         items(categories) { cat ->
-            FilterChip(selected = vm.category == cat, onClick = { vm.setCategory(cat) },
+            FilterChip(selected = vm.category == cat, onClick = { vm.updateCategory(cat) },
                 label = { Text(cat) }, colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = Accent.copy(alpha = .2f), selectedLabelColor = Accent))
         }
@@ -304,7 +304,7 @@ fun SeriesDetailPage(vm: VM) {
 @Composable
 fun SearchPage(vm: VM) {
     Column(Modifier.fillMaxSize()) {
-        OutlinedTextField(value = vm.query, onValueChange = vm::setQuery, modifier = Modifier.fillMaxWidth(),
+        OutlinedTextField(value = vm.query, onValueChange = vm::updateQuery, modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("ابحث عن قناة أو فيلم أو مسلسل") }, singleLine = true)
         val results = vm.searchResults
         if (results.isEmpty()) EmptyState("ابدأ البحث", "ستظهر النتائج هنا")
