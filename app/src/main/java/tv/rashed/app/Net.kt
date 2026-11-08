@@ -114,14 +114,16 @@ object Xtream {
         return Content(live, movies, series)
     }
 
-    fun vodInfo(p: Playlist, id: String): Info = try {
-        val info = JSONObject(Net.get(api(p, "get_vod_info") + "&vod_id=" + enc(id))).optJSONObject("info")
-            ?: return Info()
-        Info(info.s("plot").ifBlank { info.s("description") }, info.s("genre"),
-            info.s("cast").ifBlank { info.s("actors") }, info.s("rating"),
-            info.s("releasedate").take(4), info.s("duration"),
-            info.optJSONArray("backdrop_path")?.optString(0).orEmpty())
-    } catch (_: Exception) { Info() }
+    fun vodInfo(p: Playlist, id: String): Info {
+        return try {
+            val info = JSONObject(Net.get(api(p, "get_vod_info") + "&vod_id=" + enc(id))).optJSONObject("info")
+                ?: return Info()
+            Info(info.s("plot").ifBlank { info.s("description") }, info.s("genre"),
+                info.s("cast").ifBlank { info.s("actors") }, info.s("rating"),
+                info.s("releasedate").take(4), info.s("duration"),
+                info.optJSONArray("backdrop_path")?.optString(0).orEmpty())
+        } catch (_: Exception) { Info() }
+    }
 
     fun series(p: Playlist, id: String): Pair<Info, List<Episode>> {
         val root = base(p.url)
@@ -154,14 +156,16 @@ object Xtream {
         return info to episodes.sortedWith(compareBy<Episode> { it.season }.thenBy { it.num })
     }
 
-    fun epg(p: Playlist, streamId: String): List<String> = try {
-        val array = JSONObject(Net.get(api(p, "get_short_epg") + "&stream_id=" + enc(streamId) + "&limit=6"))
-            .optJSONArray("epg_listings") ?: return emptyList()
-        array.objs().map {
-            val title = try { String(Base64.decode(it.s("title"), Base64.DEFAULT)) } catch (_: Exception) { it.s("title") }
-            it.s("start").substringAfter(' ').take(5) + "   " + title
-        }
-    } catch (_: Exception) { emptyList() }
+    fun epg(p: Playlist, streamId: String): List<String> {
+        return try {
+            val array = JSONObject(Net.get(api(p, "get_short_epg") + "&stream_id=" + enc(streamId) + "&limit=6"))
+                .optJSONArray("epg_listings") ?: return emptyList()
+            array.objs().map {
+                val title = try { String(Base64.decode(it.s("title"), Base64.DEFAULT)) } catch (_: Exception) { it.s("title") }
+                it.s("start").substringAfter(' ').take(5) + "   " + title
+            }
+        } catch (_: Exception) { emptyList() }
+    }
 }
 
 class Stalker(portal: String, macAddress: String) {
