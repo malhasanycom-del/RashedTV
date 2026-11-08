@@ -238,26 +238,54 @@ private fun SearchAndCategories(vm: VM, source: List<Channel>) {
 @Composable
 fun SeriesDetailPage(vm: VM) {
     val item = vm.seriesOpen
-    if (item == null) { EmptyState("لم يتم اختيار مسلسل"); return }
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        HeroPanel(vm, item, "تفاصيل المسلسل")
-        Text(vm.seriesInfo.plot.ifBlank { item.plot }.ifBlank { "لا تتوفر نبذة لهذا المسلسل" },
-            color = Muted, modifier = Modifier.padding(vertical = 8.dp))
-        SectionTitle("المواسم", vm.seasons.size.toString() + " موسم")
-        if (vm.seasons.isNotEmpty()) LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(vm.seasons) { season ->
-                FilterChip(selected = vm.selectedSeason == season, onClick = { vm.setSeason(season) },
-                    label = { Text("الموسم " + season) })
+    if (item == null) {
+        EmptyState("لم يتم اختيار مسلسل")
+        return
+    }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+        contentPadding = PaddingValues(bottom = 24.dp)
+    ) {
+        item {
+            HeroPanel(vm, item, "تفاصيل المسلسل")
+            Text(
+                vm.seriesInfo.plot.ifBlank { item.plot }.ifBlank { "لا تتوفر نبذة لهذا المسلسل" },
+                color = Muted,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            SectionTitle("المواسم", vm.seasons.size.toString() + " موسم")
+        }
+        if (vm.seasons.isNotEmpty()) {
+            item {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(vm.seasons) { season ->
+                        FilterChip(
+                            selected = vm.selectedSeason == season,
+                            onClick = { vm.setSeason(season) },
+                            label = { Text("الموسم " + season) }
+                        )
+                    }
+                }
             }
         }
-        SectionTitle("الحلقات", vm.visibleEpisodes.size.toString() + " حلقة")
-        vm.visibleEpisodes.forEach { ep ->
-            Surface(onClick = { vm.playEpisode(ep) }, color = Panel, shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+        item { SectionTitle("الحلقات", vm.visibleEpisodes.size.toString() + " حلقة") }
+        items(vm.visibleEpisodes, key = { it.id }) { ep ->
+            Surface(
+                onClick = { vm.playEpisode(ep) },
+                color = Panel,
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    if (ep.logo.startsWith("http")) AsyncImage(ep.logo, null, Modifier.size(72.dp, 48.dp))
-                    else Box(Modifier.size(72.dp, 48.dp).background(Color(0xFF26374D), RoundedCornerShape(8.dp)),
-                        contentAlignment = Alignment.Center) { Text("▶", color = Accent) }
+                    if (ep.logo.startsWith("http")) {
+                        AsyncImage(ep.logo, null, Modifier.size(72.dp, 48.dp))
+                    } else {
+                        Box(
+                            Modifier.size(72.dp, 48.dp).background(Color(0xFF26374D), RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) { Text("▶", color = Accent) }
+                    }
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
                         Text("الحلقة " + ep.num + " - " + ep.title, color = Color.White, fontWeight = FontWeight.Bold)
@@ -267,7 +295,9 @@ fun SeriesDetailPage(vm: VM) {
                 }
             }
         }
-        if (vm.episodes.isEmpty()) EmptyState("لا توجد حلقات معروضة", "تأكد من أن مزود Xtream يعيد بيانات المواسم")
+        if (vm.episodes.isEmpty()) {
+            item { EmptyState("لا توجد حلقات معروضة", "تأكد من أن مزود Xtream يعيد بيانات المواسم") }
+        }
     }
 }
 
